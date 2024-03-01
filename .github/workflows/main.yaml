@@ -1,4 +1,65 @@
-name: Firebase Deployment
+# name: Firebase Deployment
+# on:
+#   push:
+#     branches:
+#       - main
+#   workflow_dispatch:
+
+# jobs:
+#   build:
+#     name: Build
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Repo
+#         uses: actions/checkout@v2.3.2
+#       - name: Install Dependencies
+#         run: npm install
+#       - name: Build
+#         env:
+#           REACT_APP_SUPABASE_URL: ${{secrets.REACT_APP_SUPABASE_URL}}
+#           REACT_APP_SUPABASE_KEY: ${{secrets.REACT_APP_SUPABASE_KEY}}
+#           REACT_APP_SECRET_GITHUB_TOKEN: ${{secrets.AUTH_TOKEN}}
+#           CI: false
+#         run: npm run build
+#       - name: Archive Production Artifact
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: build
+#           path: build
+
+#   deploy:
+#     name: Deploy
+#     needs: build
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Repo
+#         uses: actions/checkout@v2.3.2
+#       - name: Download Artifact
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: build
+#           path: build
+#       - name: Deploy to Firebase
+#         uses: w9jds/firebase-action@master
+#         with:
+#           args: deploy --only hosting
+#         env:
+#           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+#           check-status:
+
+#   check-status:
+#     name: Check Status
+#     needs: [build, deploy]
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout Repo
+#       uses: actions/checkout@v2.3.2
+#     - name: Get Workflow Status
+#       run: echo "Workflow status is ${{ job.status }}"
+
+name: Deploy to Firebase Hosting on push
+
 on:
   push:
     branches:
@@ -6,55 +67,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
+  build_and_deploy:
     runs-on: ubuntu-latest
-    
-      
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2.3.2
-      - name: Install Dependencies
-        run: npm install      
-      - name: Build
-        env:
-          REACT_APP_SUPABASE_URL: ${{secrets.REACT_APP_SUPABASE_URL}}
-          REACT_APP_SUPABASE_KEY: ${{secrets.REACT_APP_SUPABASE_KEY}}
-          REACT_APP_SECRET_GITHUB_TOKEN: ${{secrets.AUTH_TOKEN}}
-          CI: false     
-        run: npm run build
-      - name: Archive Production Artifact
-        uses: actions/upload-artifact@v2
+      - uses: actions/checkout@v4
+      - run: npm install
+      - run: npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          name: build
-          path: build
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
+          channelId: live
+          projectId: ip-risingstar
 
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2.3.2
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-          path: build
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          check-status:
-            
-  check-status: 
-    name: Check Status
-    needs: [build, deploy]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v2.3.2
-    - name: Get Workflow Status
-      run: echo "Workflow status is ${{ job.status }}"
+  # post_request_on_failure:
+  #   needs: build_and_deploy
+  #   if: ${{ failure() }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Make POST request on deployment failure
+  #       run: |
+  #         curl -X POST \
+  #           -H "Content-Type: application/json" \
+  #           -d '{"error": "Deployment failed"}' \
+  #           https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
+
+  # post_request_on_success:
+  #   needs: build_and_deploy
+  #   if: ${{ success() }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Make POST request on successful deployment
+  #       run: |
+  #         curl -X POST \
+  #           -H "Content-Type: application/json" \
+  #           -d '{"message": "Deployment successful"}' \
+  #          https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
