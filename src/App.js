@@ -9,7 +9,9 @@ import ImageList from "./components/ImageList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Workflows from "./components/Workflows";
+
 function App() {
+
   const [images, setImages] = useState([]);
   const user = useUser();
   const supabase = useSupabaseClient();
