@@ -34,15 +34,18 @@ function App() {
   }
   
 
+  
   useEffect(() => {
     if (user) {
       getImages();
     }
   }, [user]);
 
+
   async function signOut() {
     const { error } = await supabase.auth.signOut();
   }
+
 
   async function uploadImage(e) {
     const file = e.target.files[0];
