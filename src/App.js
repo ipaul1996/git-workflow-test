@@ -31,6 +31,7 @@ function App() {
       console.log(error);
     }
   }
+  
 
   useEffect(() => {
     if (user) {
