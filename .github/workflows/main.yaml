@@ -19,26 +19,26 @@ jobs:
           channelId: live
           projectId: ip-risingstar
 
-  # post_request_on_failure:
-  #   needs: build_and_deploy
-  #   if: ${{ failure() }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Make POST request on deployment failure
-  #       run: |
-  #         curl -X POST \
-  #           -H "Content-Type: application/json" \
-  #           -d '{"error": "Deployment failed"}' \
-  #           https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
+  post_request_on_failure:
+    needs: build_and_deploy
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make POST request on deployment failure
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"error": "Deployment failed"}' \
+            https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
 
-  # post_request_on_success:
-  #   needs: build_and_deploy
-  #   if: ${{ success() }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Make POST request on successful deployment
-  #       run: |
-  #         curl -X POST \
-  #           -H "Content-Type: application/json" \
-  #           -d '{"message": "Deployment successful"}' \
-  #          https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
+  post_request_on_success:
+    needs: build_and_deploy
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make POST request on successful deployment
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"message": "Deployment successful"}' \
+           https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
