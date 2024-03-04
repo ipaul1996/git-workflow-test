@@ -6,23 +6,13 @@ name: Deploy to Firebase Hosting on push
   # workflow_dispatch:
 
 jobs:
-  checkout-repo:
+  checkout_install_build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout-repo
         uses: actions/checkout@v4
-
-  install-dependencies:
-    runs-on: ubuntu-latest
-    needs: checkout-repo
-    steps:
       - name: install-dependencies
         run: npm install
-
-  build:
-    runs-on: ubuntu-latest
-    needs: install-dependencies
-    steps:
       - name: build
         env:
           REACT_APP_SUPABASE_URL: ${{secrets.REACT_APP_SUPABASE_URL}}
@@ -33,7 +23,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: checkout_install_build
     steps:
       - name: deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
@@ -42,8 +32,6 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
           channelId: live
           projectId: ip-risingstar
-
-
 
   post_request_on_deployment_failure:
     needs: deploy
