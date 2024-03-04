@@ -9,13 +9,12 @@ const Workflows = () => {
   const [responseMessage, setResponseMessage] = useState(null);
 
   const triggerWorkflow = async () => {
-
-    console.log(process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW);
+    console.log("Hello", process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW);
     try {
       const octokit = new Octokit({
-        auth: process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW,
+        // auth: process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW,
         //auth: "${{secrets.WORKFLOW_GITHUB_TOKEN}}",
-
+        auth: "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",
         baseUrl: "https://api.github.com",
       });
       //https://github.com/pintu1397/react-gha/actions/workflows/main.yaml
