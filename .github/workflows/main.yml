@@ -23,7 +23,7 @@ jobs:
 
       - name: Make a PATCH request when the dependency installation has started
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=${{github.run_id}}' \
+          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
@@ -35,7 +35,7 @@ jobs:
 
       - name: Make a PATCH request when the build process has started
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=${{github.run_id}}' \
+          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
@@ -60,7 +60,7 @@ jobs:
     steps:
       - name: Make a PATCH request when deployment to firebase is started
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=${{github.run_id}}' \
+          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
@@ -91,7 +91,7 @@ jobs:
     steps:
       - name: Make PATCH request on deployment failure
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=${{github.run_id}}' \
+          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
@@ -105,7 +105,7 @@ jobs:
     steps:
       - name: Make PATCH request on successful deployment
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=${{github.run_id}}' \
+          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
