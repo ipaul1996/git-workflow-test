@@ -14,7 +14,7 @@ const Workflows = () => {
       const octokit = new Octokit({
         // auth: process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW,
         //auth: "${{secrets.WORKFLOW_GITHUB_TOKEN}}",
-        auth: "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",
+        auth: "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",
         baseUrl: "https://api.github.com",
       });
       //https://github.com/pintu1397/react-gha/actions/workflows/main.yaml
