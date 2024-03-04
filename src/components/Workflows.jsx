@@ -12,38 +12,21 @@ const Workflows = () => {
     console.log("Hello", process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW);
     try {
       const octokit = new Octokit({
-        // auth: process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW,
-        //auth: "${{secrets.WORKFLOW_GITHUB_TOKEN}}",
-        auth: "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"
-        // baseUrl: "https://api.github.com",
+        auth: "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",
       });
-      //https://github.com/pintu1397/react-gha/actions/workflows/main.yaml
+
       const response = await octokit.request(
         "POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches",
         {
           owner: "ipaul1996",
           repo: "git-workflow-test",
-          workflow_id: "main.yaml",
+          workflow_id: "main.yml",
           ref: "main",
           headers: {
             "X-GitHub-Api-Version": "2022-11-28",
           },
         }
       );
-
-      // const statusResponse = await octokit.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs', {
-      //   owner: 'ipaul1996',
-      //   repo: 'git-workflow-test',
-      //   workflow_id: 'main.yaml',
-      //   headers: {
-      //     'Accept': 'application/vnd.github.v3+json',
-      //   }
-      // });
-
-      // Assuming the last run is at index 0
-      // const lastRun = statusResponse.data.workflow_runs[55];
-
-      // console.log(lastRun.status);
 
       // setResponseMessage(`Initiating deployment`);
     } catch (error) {
