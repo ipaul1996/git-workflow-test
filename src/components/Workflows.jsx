@@ -9,6 +9,8 @@ const Workflows = () => {
   const [responseMessage, setResponseMessage] = useState(null);
 
   const triggerWorkflow = async () => {
+
+    console.log(process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW);
     try {
       const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW,
