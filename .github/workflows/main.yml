@@ -6,13 +6,21 @@ name: Deploy to Firebase Hosting on push
   # workflow_dispatch:
 
 jobs:
-  build_and_deploy:
+  checkout-repo:
     runs-on: ubuntu-latest
     steps:
       - name: checkout-repo
         uses: actions/checkout@v4
-      - name: Install dependencies
+
+  install-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install-dependencies
         run: npm install
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
       - name: build
         env:
           REACT_APP_SUPABASE_URL: ${{secrets.REACT_APP_SUPABASE_URL}}
@@ -20,6 +28,10 @@ jobs:
           # REACT_APP_SECRET_GITHUB_TOKEN: ${{secrets.AUTH_TOKEN}}
           CI: false
         run: npm run build
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
       - name: deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -28,8 +40,10 @@ jobs:
           channelId: live
           projectId: ip-risingstar
 
-  post_request_on_failure:
-    needs: build_and_deploy
+
+
+  post_request_on_deployment_failure:
+    needs: deploy
     if: ${{ failure() }}
     runs-on: ubuntu-latest
     steps:
@@ -37,11 +51,11 @@ jobs:
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"error": "Deployment failed"}' \
+            -d '{"message": "Deployment failed", "run_id": "${{ github.run_id }}"}' \
             https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
 
-  post_request_on_success:
-    needs: build_and_deploy
+  post_request_on_deployment_success:
+    needs: deploy
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
@@ -49,5 +63,5 @@ jobs:
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"message": "Deployment successful"}' \
+            -d '{"message": "Deployment successful", "run_id": "${{ github.run_id }}"}' \
            https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
