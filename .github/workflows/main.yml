@@ -54,7 +54,7 @@ jobs:
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"message": "Deployment failed", "run_id": "${{ github.run_id }}"}' \
+            -d '{"message": "Deployment failed", "run_id": ${{ github.run_id }}}' \
             https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
 
   post_request_on_deployment_success:
