@@ -12,7 +12,7 @@ const Workflows = () => {
     console.log("Hello", process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW);
     try {
       const octokit = new Octokit({
-        auth: "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",
+        auth: "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",
       });
 
       const response = await octokit.request(
