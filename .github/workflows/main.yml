@@ -9,10 +9,33 @@ jobs:
   checkout_install_build:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Make a post request on process initation
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"status": "Initiating deployment, syncing repository", "run_id": ${{ github.run_id }}}' \
+          https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
+
       - name: checkout-repo
         uses: actions/checkout@v4
+
+      - name: Make a post request when the dependency installation has started
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"status": "Preparing production environment, installing dependencies", "run_id": ${{ github.run_id }}}' \
+          https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
+
       - name: install-dependencies
         run: npm install
+
+      - name: Make a post request when the build process has started
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"status": "Building application for the deployment", "run_id": ${{ github.run_id }}}' \
+          https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
       - name: build
         env:
           REACT_APP_SUPABASE_URL: ${{secrets.REACT_APP_SUPABASE_URL}}
@@ -30,13 +53,23 @@ jobs:
     runs-on: ubuntu-latest
     needs: checkout_install_build
     steps:
+
+      - name: Make a post request when deployment to firebase is started
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"status": "Initiating deployment to Firebase", "run_id": ${{ github.run_id }}}' \
+          https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
+
       - name: Checkout Repo
         uses: actions/checkout@v2.3.2
+
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
           name: build
           path: build
+
       - name: deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -54,7 +87,7 @@ jobs:
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"message": "Deployment failed", "run_id": ${{ github.run_id }}}' \
+            -d '{"status": "Failed to deploy the application", "run_id": ${{ github.run_id }}}' \
             https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
 
   post_request_on_deployment_success:
@@ -66,5 +99,5 @@ jobs:
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"message": "Deployment successful", "run_id": ${{ github.run_id }}}' \
+            -d '{"status": "Deployment successful: Your application is live", "run_id": ${{ github.run_id }}}' \
            https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
