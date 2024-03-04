@@ -100,8 +100,8 @@ jobs:
         #    https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
         run: |
           curl -X POST 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history' \
-            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiY3liaWpzdXJubGViZXlyZXJlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNTczMDgxNCwiZXhwIjoyMDIxMzA2ODE0fQ.WfAbaHALGNU-ArwX5ZKz8_grE_6KyNA_3a6tfKM4110" \
-            -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiY3liaWpzdXJubGViZXlyZXJlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNTczMDgxNCwiZXhwIjoyMDIxMzA2ODE0fQ.WfAbaHALGNU-ArwX5ZKz8_grE_6KyNA_3a6tfKM4110" \
+            -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
             -d '{ "id": ${{ github.run_id }}, "deployment_status": "Deployment successful: Your application is live" }'
