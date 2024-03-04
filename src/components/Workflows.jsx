@@ -11,7 +11,7 @@ const Workflows = () => {
   const triggerWorkflow = async () => {
     try {
       const octokit = new Octokit({
-        auth: process.env.REACT_APP_SECRET_GITHUB_TOKEN,
+        auth: process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW,
         //auth: "${{secrets.WORKFLOW_GITHUB_TOKEN}}",
 
         baseUrl: "https://api.github.com",
