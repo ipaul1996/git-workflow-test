@@ -20,6 +20,11 @@ jobs:
           # REACT_APP_SECRET_GITHUB_TOKEN: ${{secrets.AUTH_TOKEN}}
           CI: false
         run: npm run build
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build
 
   deploy:
     runs-on: ubuntu-latest
