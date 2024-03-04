@@ -3,7 +3,7 @@ name: Deploy to Firebase Hosting on push
   push:
     branches:
       - main
-  # workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   checkout_install_build:
