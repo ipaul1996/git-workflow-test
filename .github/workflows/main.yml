@@ -9,12 +9,11 @@ jobs:
   checkout_install_build:
     runs-on: ubuntu-latest
     steps:
-
       - name: Make a post request on process initation
         run: |
           curl -X POST \
           -H "Content-Type: application/json" \
-          -d '{"status": "Initiating deployment, syncing repository", "run_id": ${{ github.run_id }}}' \
+          -d '{"status": "Initiating deployment, syncing repository", "id": ${{ github.run_id }}}' \
           https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
 
       - name: checkout-repo
@@ -24,7 +23,7 @@ jobs:
         run: |
           curl -X POST \
           -H "Content-Type: application/json" \
-          -d '{"status": "Preparing production environment, installing dependencies", "run_id": ${{ github.run_id }}}' \
+          -d '{"status": "Preparing production environment, installing dependencies", "id": ${{ github.run_id }}}' \
           https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
 
       - name: install-dependencies
@@ -34,7 +33,7 @@ jobs:
         run: |
           curl -X POST \
           -H "Content-Type: application/json" \
-          -d '{"status": "Building application for the deployment", "run_id": ${{ github.run_id }}}' \
+          -d '{"status": "Building application for the deployment", "id": ${{ github.run_id }}}' \
           https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
       - name: build
         env:
@@ -52,12 +51,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: checkout_install_build
     steps:
-
       - name: Make a post request when deployment to firebase is started
         run: |
           curl -X POST \
           -H "Content-Type: application/json" \
-          -d '{"status": "Initiating deployment to Firebase", "run_id": ${{ github.run_id }}}' \
+          -d '{"status": "Initiating deployment to Firebase", "id": ${{ github.run_id }}}' \
           https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
 
       - name: Checkout Repo
@@ -86,7 +84,7 @@ jobs:
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"status": "Failed to deploy the application", "run_id": ${{ github.run_id }}}' \
+            -d '{"status": "Failed to deploy the application", "id": ${{ github.run_id }}}' \
             https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
 
   post_request_on_deployment_success:
@@ -95,8 +93,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Make POST request on successful deployment
+        # run: |
+        #   curl -X POST \
+        #     -H "Content-Type: application/json" \
+        #     -d '{"status": "Deployment successful: Your application is live", "id": ${{ github.run_id }}}' \
+        #    https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
         run: |
-          curl -X POST \
+          curl -X POST 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history' \
+            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiY3liaWpzdXJubGViZXlyZXJlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNTczMDgxNCwiZXhwIjoyMDIxMzA2ODE0fQ.WfAbaHALGNU-ArwX5ZKz8_grE_6KyNA_3a6tfKM4110" \
+            -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiY3liaWpzdXJubGViZXlyZXJlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNTczMDgxNCwiZXhwIjoyMDIxMzA2ODE0fQ.WfAbaHALGNU-ArwX5ZKz8_grE_6KyNA_3a6tfKM4110" \
             -H "Content-Type: application/json" \
-            -d '{"status": "Deployment successful: Your application is live", "run_id": ${{ github.run_id }}}' \
-           https://webhook.site/a2598719-58c2-48e6-b1dc-1044bcd27a07
+            -H "Prefer: return=minimal" \
+            -d '{ "id": ${{ github.run_id }}, "deployment_status": "Deployment successful: Your application is live" }'
