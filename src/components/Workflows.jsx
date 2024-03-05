@@ -9,10 +9,9 @@ const Workflows = () => {
   const [responseMessage, setResponseMessage] = useState(null);
 
   const triggerWorkflow = async () => {
-    // console.log("Hello", process.env.GITHUB_TOKEN_TO_RUN_WORKFLOW);
     try {
       const octokit = new Octokit({
-        auth: "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",
+        auth: process.env.TOKEN_TO_RUN_WORKFLOW,
       });
 
       const response = await octokit.request(
@@ -24,7 +23,7 @@ const Workflows = () => {
           ref: "main",
           headers: {
             "X-GitHub-Api-Version": "2022-11-28",
-            "accept": "application/vnd.github+json"
+            accept: "application/vnd.github+json",
           },
         }
       );
