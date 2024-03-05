@@ -16,7 +16,7 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "id": ${{ github.run_id }}, "deployment_status": "Initiating deployment, syncing repository" }'
+            -d '{ "id": ${{ github.run_id }}, "deployment_status": "Syncing repository" }'
 
       - name: checkout-repo
         uses: actions/checkout@v4
@@ -65,7 +65,7 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Initiating deployment to Firebase" }'
+            -d '{ "deployment_status": "Deploying to Firebase" }'
 
       - name: Checkout Repo
         uses: actions/checkout@v2.3.2
