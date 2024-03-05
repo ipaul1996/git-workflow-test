@@ -5,6 +5,9 @@ name: Deploy to Firebase Hosting on push
       - main
   workflow_dispatch:
 
+permissions:
+  actions: write
+
 jobs:
   checkout_install_build:
     runs-on: ubuntu-latest
