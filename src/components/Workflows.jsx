@@ -9,10 +9,14 @@ const Workflows = () => {
   const [responseMessage, setResponseMessage] = useState(null);
 
   const triggerWorkflow = async () => {
+
+    
     try {
       const octokit = new Octokit({
         auth: process.env.TOKEN_TO_RUN_WORKFLOW,
       });
+
+
 
       const response = await octokit.request(
         "POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches",
