@@ -6,7 +6,8 @@ name: Deploy to Firebase Hosting on push
   workflow_dispatch:
 
 permissions:
-  actions: write
+  write-all
+  # actions: write
 
 jobs:
   checkout_install_build:
