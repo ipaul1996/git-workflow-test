@@ -8,8 +8,6 @@ import { createClient } from "@supabase/supabase-js";
 
 
 const apiUrl = process.env.REACT_APP_SUPABASE_URL;
-
-
 const apiKey = process.env.REACT_APP_SUPABASE_KEY;
   
 

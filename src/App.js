@@ -3,18 +3,14 @@ import { Container, Button } from "react-bootstrap";
 import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { v4 as uuidv4 } from "uuid";
 import Login from "./components/Login";
-import ImageUploadForm from "./components/ImageUploadForm";
 import ImageList from "./components/ImageList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import Workflows from "./components/Workflows";
 
 function App() {
-
   const [images, setImages] = useState([]);
   const user = useUser();
   const supabase = useSupabaseClient();
-
 
   async function getImages() {
     const { data, error } = await supabase.storage
@@ -32,20 +28,16 @@ function App() {
       console.log(error);
     }
   }
-  
 
-  
   useEffect(() => {
     if (user) {
       getImages();
     }
   }, [user]);
 
-
   async function signOut() {
     const { error } = await supabase.auth.signOut();
   }
-
 
   async function uploadImage(e) {
     const file = e.target.files[0];
@@ -82,17 +74,12 @@ function App() {
       ) : (
         <>
           <h1>Your Images </h1>
-          
-          <Button className="btn btn-danger" onClick={() => signOut()}>Log Out</Button>
-          <p>
-            current user: {user.email} 
-          </p>
-          <p>upload a Image </p>
 
-          <ImageUploadForm uploadImage={uploadImage} />
-          <hr />
-          
-          <h3><Workflows /></h3>
+          <Button className="btn btn-danger" onClick={() => signOut()}>
+            Log Out
+          </Button>
+          <p>current user: {user.email}</p>
+
           <ImageList user={user} images={images} deleteImage={deleteImage} />
         </>
       )}
