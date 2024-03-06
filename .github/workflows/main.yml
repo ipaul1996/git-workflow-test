@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: checkout_install_build
     outputs:
-      output: ${{ steps.deploy.outputs.details_url }}
+      output: ${{ steps.deploy.outputs.urls }}
     steps:
       - name: Make a PATCH request when deployment to firebase is started
         run: |
