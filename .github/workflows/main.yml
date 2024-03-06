@@ -54,9 +54,11 @@ jobs:
           name: build
           path: build
 
-  deploy:
+  deployment:
     runs-on: ubuntu-latest
     needs: checkout_install_build
+    outputs:
+      output: ${{ steps.deploy.outputs.details_url }}
     steps:
       - name: Make a PATCH request when deployment to firebase is started
         run: |
@@ -77,6 +79,7 @@ jobs:
           path: build
 
       - name: deploy
+        id: deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
@@ -85,7 +88,7 @@ jobs:
           projectId: ip-risingstar
 
   post_request_on_deployment_failure:
-    needs: deploy
+    needs: deployment
     if: ${{ failure() }}
     runs-on: ubuntu-latest
     steps:
@@ -99,7 +102,7 @@ jobs:
             -d '{ "deployment_status": "Failed to deploy the application" }'
 
   post_request_on_deployment_success:
-    needs: deploy
+    needs: deployment
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
@@ -110,4 +113,4 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Deployment successful: Your application is live", "deploy_url": ${{needs.deploy.steps.deploy.outputs.details_url}} }'
+            -d '{ "deployment_status": "Deployment successful: Your application is live", "deploy_url": ${{needs.deployment.outputs.output}} }'
