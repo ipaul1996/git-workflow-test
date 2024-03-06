@@ -57,8 +57,6 @@ jobs:
   deployment:
     runs-on: ubuntu-latest
     needs: checkout_install_build
-    outputs:
-      output: ${{ steps.deploy.Outputs.details_url }}
     steps:
       - name: Make a PATCH request when deployment to firebase is started
         run: |
@@ -86,6 +84,8 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
           channelId: live
           projectId: ip-risingstar
+    outputs:
+      details_url: ${{ steps.deploy.outputs.details_url }}
 
   post_request_on_deployment_failure:
     needs: deployment
@@ -113,4 +113,4 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Deployment successful: Your application is live", "deploy_url": ${{needs.deployment.outputs.output}} }'
+            -d '{ "deployment_status": "Deployment successful: Your application is live", "deploy_url": ${{needs.deployment.outputs.details_url}} }'
