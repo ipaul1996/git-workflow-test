@@ -89,7 +89,7 @@ jobs:
       - name: check-output
         run: |
           echo "Check output:"
-          echo ${{ steps.deploy-firebase.outputs }}
+          echo "${{ toJson(steps.deploy-firebase.outputs) }}"
     outputs:
       details_url: ${{ steps.deploy-firebase.outputs.expire_time }}
 
