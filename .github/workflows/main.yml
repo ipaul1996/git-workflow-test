@@ -85,6 +85,10 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
           channelId: live
           projectId: ip-risingstar
+
+      - name: check-output
+        run: |
+          echo "Check output: ${{ steps.deploy-firebase.outputs.expire_time }}"
     outputs:
       details_url: ${{ steps.deploy-firebase.outputs.expire_time }}
 
