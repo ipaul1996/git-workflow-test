@@ -88,7 +88,8 @@ jobs:
 
       - name: check-output
         run: |
-          echo "Check output:" "$(echo ${{ steps.deploy-firebase.outputs }} | jq .)"
+          echo "Check output:"
+          echo "${{ steps.deploy-firebase.outputs }}"
     outputs:
       details_url: ${{ steps.deploy-firebase.outputs.expire_time }}
 
