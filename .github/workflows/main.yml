@@ -85,18 +85,13 @@ jobs:
         #   firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
         #   channelId: live
         #   projectId: ip-risingstar
-        uses: ipaul1996/firebase-deploy-action@v1.3
+        uses: ipaul1996/firebase-deploy-action@v1.1
         with:
           githubRepoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
           deploymentType: preview
           deployTarget: "git-workflow-test-app"
           firebaseProjectId: ip-risingstar
-
-      - name: check-output
-        run: |
-          echo "Check output:"
-          echo "${{steps.deploy-firebase.outputs.deploy_url}}"
     outputs:
       deploy_url: ${{ steps.deploy-firebase.outputs.deploy_url }}
       deployment_type: ${{ steps.deploy-firebase.outputs.deployment_type }}
