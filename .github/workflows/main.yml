@@ -85,7 +85,7 @@ jobs:
         #   firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
         #   channelId: live
         #   projectId: ip-risingstar
-        uses: ipaul1996/firebase-deploy-action@v1.1
+        uses: ipaul1996/firebase-deploy-action@v1.2
         with: 
           githubRepoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
