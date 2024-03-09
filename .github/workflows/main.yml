@@ -86,19 +86,21 @@ jobs:
         #   channelId: live
         #   projectId: ip-risingstar
         uses: ipaul1996/firebase-deploy-action@v1.3
-        with: 
+        with:
           githubRepoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
           deploymentType: preview
           deployTarget: "git-workflow-test-app"
           firebaseProjectId: ip-risingstar
-            
+
       - name: check-output
         run: |
           echo "Check output:"
           echo "${{steps.deploy-firebase.outputs.deploy_url }}"
     outputs:
       deploy_url: ${{ steps.deploy-firebase.outputs.deploy_url }}
+      deployment_type: ${{ steps.deploy-firebase.outputs.deployment_type }}
+      preview_expires: ${{ steps.deploy-firebase.outputs.preview_expires }}
 
   post_request_on_deployment_failure:
     needs: deployment-firebase
@@ -126,4 +128,4 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Deployment successful: Your application is live", "deploy_url": "${{needs.deployment-firebase.outputs.deploy_url}}" }'
+            -d '{ "deployment_status": "Deployment successful", "deployment_type": ${{needs.deployment-firebase.outputs.deployment_type}}, "deploy_url": ${{needs.deployment-firebase.outputs.deploy_url}}, "preview_expires": ${{needs.deployment-firebase.outputs.preview_expires}} }'
