@@ -96,7 +96,7 @@ jobs:
       - name: check-output
         run: |
           echo "Check output:"
-          echo "${{steps.deploy-firebase.outputs.deploy_url }}"
+          echo "${{steps.deploy-firebase.outputs.deploy_url}}"
     outputs:
       deploy_url: ${{ steps.deploy-firebase.outputs.deploy_url }}
       deployment_type: ${{ steps.deploy-firebase.outputs.deployment_type }}
