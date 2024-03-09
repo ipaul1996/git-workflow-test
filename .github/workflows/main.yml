@@ -79,12 +79,20 @@ jobs:
       - name: deploy-firebase
         id: deploy-firebase
         # uses: FirebaseExtended/action-hosting-deploy@v0
-        uses: FirebaseExtended/action-hosting-deploy@v0.7.1
-        with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+        # uses: FirebaseExtended/action-hosting-deploy@v0.7.1
+        # with:
+        #   repoToken: "${{ secrets.GITHUB_TOKEN }}"
+        #   firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
+        #   channelId: live
+        #   projectId: ip-risingstar
+        uses: ipaul1996/firebase-deploy-action@v1.0
+        with: 
+          githubRepoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
-          channelId: live
-          projectId: ip-risingstar
+          hostingChannelId: live
+          deployTarget: "git-workflow-test-app"
+          firebaseProjectId: ip-risingstar
+            
 
       - name: check-output
         run: |
