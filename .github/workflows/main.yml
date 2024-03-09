@@ -97,9 +97,9 @@ jobs:
       - name: check-output
         run: |
           echo "Check output:"
-          echo "${{ toJson(steps.deploy-firebase.outputs) }}"
+          echo "${{steps.deploy-firebase.outputs.deploy_url }}"
     outputs:
-      details_url: ${{ steps.deploy-firebase.outputs.expire_time }}
+      deploy_url: ${{ steps.deploy-firebase.outputs.deploy_url }}
 
   post_request_on_deployment_failure:
     needs: deployment-firebase
@@ -127,4 +127,4 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Deployment successful: Your application is live", "deploy_url": "${{needs.deployment-firebase.outputs.details_url}}" }'
+            -d '{ "deployment_status": "Deployment successful: Your application is live", "deploy_url": "${{needs.deployment-firebase.outputs.deploy_url}}" }'
