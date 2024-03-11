@@ -67,10 +67,10 @@ jobs:
           # deployTarget: "git-workflow-test-app"
 
       - name: print
-        run: echo ${{ steps.deploy-firebase.outputs.deployment_details }}
+        run: echo ${{ steps.deploy-firebase.outputs.details }}
 
     outputs:
-      deployment_details: ${{ steps.deploy-firebase.outputs.deployment_details }}
+      details: ${{ steps.deploy-firebase.outputs.details }}
       # deployment_type: ${{ steps.deploy-firebase.outputs.deployment_type }}
       # preview_expires: ${{ steps.deploy-firebase.outputs.preview_expires }}
 
@@ -94,7 +94,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: print
-        run: echo ${{ needs.checkout_install_build_deploy.outputs.deployment_details }}
+        run: echo ${{ needs.checkout_install_build_deploy.outputs.details }}
       - name: Make PATCH request on successful deployment
         run: |
           # curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
