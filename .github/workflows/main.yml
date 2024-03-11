@@ -93,12 +93,12 @@ jobs:
     steps:
       - name: Read deployment details from file
         id: read_deployment_details
-        run: echo "::set-output name=deployment_details::$(cat deployment_details.json)"
+        run: echo "DEPLOYMENT_DETAILS=$(cat deployment_details.json)" >> $GITHUB_ENV
       
       - name: Use deployment details
         run: |
           # Access the deployment_details output from the previous step
-          echo "Deployment details: ${{ steps.read_deployment_details.outputs.deployment_details }}"
+          echo "Deployment details: $DEPLOYMENT_DETAILS"
 
       - name: Make PATCH request on successful deployment
         run: |
