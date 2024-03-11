@@ -48,11 +48,11 @@ jobs:
           REACT_APP_SUPABASE_KEY: ${{secrets.REACT_APP_SUPABASE_KEY}}
           CI: false
         run: npm run build
-      - name: Archive Production Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: build
-          path: build
+      # - name: Archive Production Artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: build
+      #     path: build
 
   deployment-firebase:
     runs-on: ubuntu-latest
@@ -67,14 +67,14 @@ jobs:
             -H "Prefer: return=minimal" \
             -d '{ "deployment_status": "Deploying to Firebase" }'
 
-      - name: Checkout Repo
-        uses: actions/checkout@v2.3.2
+      # - name: Checkout Repo
+      #   uses: actions/checkout@v2.3.2
 
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-          path: build
+      # - name: Download Artifact
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: build
+      #     path: build
 
       - name: deploy-firebase
         id: deploy-firebase
