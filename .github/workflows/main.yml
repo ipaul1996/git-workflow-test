@@ -64,7 +64,7 @@ jobs:
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
           deploymentType: live
-          deployTarget: "git-workflow-test-app"
+          # deployTarget: "git-workflow-test-app"
     outputs:
       deploy_url: ${{ steps.deploy-firebase.outputs.deploy_url }}
       deployment_type: ${{ steps.deploy-firebase.outputs.deployment_type }}
@@ -91,9 +91,12 @@ jobs:
     steps:
       - name: Make PATCH request on successful deployment
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
-            -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-            -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-            -H "Content-Type: application/json" \
-            -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Deployment successful", "deployment_type": "${{needs.deployment-firebase.outputs.deployment_type}}", "deploy_url": "${{needs.deployment-firebase.outputs.deploy_url}}", "preview_expires": "${{needs.deployment-firebase.outputs.preview_expires}}" }'
+          # curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
+          #   -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+          #   -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+          #   -H "Content-Type: application/json" \
+          #   -H "Prefer: return=minimal" \
+          #   -d '{ "deployment_status": "Deployment successful", "deployment_type": "${{needs.checkout_install_build_deploy.outputs.deployment_type}}", "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}", "preview_expires": "${{needs.checkout_install_build_deploy.outputs.preview_expires}}" }'
+          # Create a shell variable to hold the JSON payload with conditional assignment
+          
+          
