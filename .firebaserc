@@ -2,6 +2,14 @@
   "projects": {
     "default": "ip-risingstar"
   },
-  "targets": {},
+  "targets": {
+    "ip-risingstar": {
+      "hosting": {
+        "git-workflow-test-app": [
+          "workflow-test0"
+        ]
+      }
+    }
+  },
   "etags": {}
 }
