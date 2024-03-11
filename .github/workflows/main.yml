@@ -66,7 +66,7 @@ jobs:
           deploymentType: preview
           # deployTarget: "git-workflow-test-app"
     outputs:
-      deployment_details: ${{ steps.deploy-firebase.outputs.deployment_details }}
+      deployment_details: ${{ toJSON(steps.deploy-firebase.outputs.deployment_details) }}
       # deployment_type: ${{ steps.deploy-firebase.outputs.deployment_type }}
       # preview_expires: ${{ steps.deploy-firebase.outputs.preview_expires }}
 
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Echo Deployment Details
-        run: echo "${{ toJson(needs.checkout_install_build_deploy.outputs.deployment_details) }}"
+        run: echo "${{ needs.checkout_install_build_deploy.outputs.deployment_details }}"
 
       - name: Make PATCH request on successful deployment
         run: |
