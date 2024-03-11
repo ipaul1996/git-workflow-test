@@ -79,9 +79,6 @@ jobs:
     if: ${{ failure() }}
     runs-on: ubuntu-latest
     steps:
-      - name: print
-        run: echo ${{ needs.checkout_install_build_deploy.outputs.deployment_details }}
-
       - name: Make PATCH request on deployment failure
         run: |
           curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
@@ -96,6 +93,8 @@ jobs:
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
+      - name: print
+        run: echo ${{ needs.checkout_install_build_deploy.outputs.deployment_details }}
       - name: Make PATCH request on successful deployment
         run: |
           # curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
