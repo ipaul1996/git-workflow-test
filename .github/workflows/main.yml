@@ -65,8 +65,10 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
           deploymentType: preview
           # deployTarget: "git-workflow-test-app"
-    outputs:
-      deployment_details: ${{ toJSON(steps.deploy-firebase.outputs.deployment_details) }}
+      - name: Save deployment details to file
+        run: echo "${{ steps.deploy-firebase.outputs.deployment_details }}" > deployment_details.json
+    # outputs:
+    #   deployment_details: ${{ toJSON(steps.deploy-firebase.outputs.deployment_details) }}
       # deployment_type: ${{ steps.deploy-firebase.outputs.deployment_type }}
       # preview_expires: ${{ steps.deploy-firebase.outputs.preview_expires }}
 
@@ -89,8 +91,14 @@ jobs:
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
-      - name: Echo Deployment Details
-        run: echo "${{ needs.checkout_install_build_deploy.outputs.deployment_details }}"
+      - name: Read deployment details from file
+        id: read_deployment_details
+        run: echo "::set-output name=deployment_details::$(cat deployment_details.json)"
+      
+      - name: Use deployment details
+        run: |
+          # Access the deployment_details output from the previous step
+          echo "Deployment details: ${{ steps.read_deployment_details.outputs.deployment_details }}"
 
       - name: Make PATCH request on successful deployment
         run: |
