@@ -63,12 +63,14 @@ jobs:
         uses: ipaul1996/firebase-deploy-action@v1.4
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
-          deploymentType: preview
+          deploymentType: live
           # deployTarget: "git-workflow-test-app"
-      - name: Save deployment details to file
-        run: echo "${{ steps.deploy-firebase.outputs.deployment_details }}" > deployment_details.json
-    # outputs:
-    #   deployment_details: ${{ toJSON(steps.deploy-firebase.outputs.deployment_details) }}
+
+      - name: print
+        run: echo ${{ steps.deploy-firebase.outputs.deployment_details }}
+
+    outputs:
+      deployment_details: ${{ steps.deploy-firebase.outputs.deployment_details }}
       # deployment_type: ${{ steps.deploy-firebase.outputs.deployment_type }}
       # preview_expires: ${{ steps.deploy-firebase.outputs.preview_expires }}
 
@@ -77,6 +79,9 @@ jobs:
     if: ${{ failure() }}
     runs-on: ubuntu-latest
     steps:
+      - name: print
+        run: echo ${{ needs.checkout_install_build_deploy.outputs.deployment_details }}
+
       - name: Make PATCH request on deployment failure
         run: |
           curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
@@ -91,15 +96,6 @@ jobs:
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
-      - name: Read deployment details from file
-        id: read_deployment_details
-        run: echo "DEPLOYMENT_DETAILS=$(cat deployment_details.json)" >> $GITHUB_ENV
-      
-      - name: Use deployment details
-        run: |
-          # Access the deployment_details output from the previous step
-          echo "Deployment details: $DEPLOYMENT_DETAILS"
-
       - name: Make PATCH request on successful deployment
         run: |
           # curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
