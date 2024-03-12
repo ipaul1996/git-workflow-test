@@ -103,10 +103,10 @@ jobs:
           echo ${{ needs.checkout_install_build_deploy.outputs.preview_expires }}
       - name: Make PATCH request on successful deployment
         run: |
-          # curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
-          #   -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-          #   -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-          #   -H "Content-Type: application/json" \
-          #   -H "Prefer: return=minimal" \
-          #   -d '{ "deployment_status": "Deployment successful", "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}" }'
-          # Create a shell variable to hold the JSON payload with conditional assignment
+          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{ "deployment_status": "Deployment successful", "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}" }'
+          
