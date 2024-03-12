@@ -66,12 +66,6 @@ jobs:
           deploymentType: live
           # deployTarget: "git-workflow-test-app"
 
-      - name: print
-        run: |
-          echo ${{ steps.deploy-firebase.outputs.deploy_url }}
-          echo ${{ steps.deploy-firebase.outputs.deploy_urls }}
-          echo ${{ steps.deploy-firebase.outputs.preview_expires }}
-
     outputs:
       deploy_url: ${{ steps.deploy-firebase.outputs.deploy_url }}
       deploy_urls: ${{ steps.deploy-firebase.outputs.deploy_urls }}
@@ -91,16 +85,13 @@ jobs:
             -H "Prefer: return=minimal" \
             -d '{ "deployment_status": "Failed to deploy the application" }'
 
+
+            
   post_request_on_deployment_success:
     needs: checkout_install_build_deploy
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
-      - name: print
-        run: |
-          echo ${{ needs.checkout_install_build_deploy.outputs.deploy_url }}
-          echo ${{ needs.checkout_install_build_deploy.outputs.deploy_urls }}
-          echo ${{ needs.checkout_install_build_deploy.outputs.preview_expires }}
       - name: Make PATCH request on successful deployment
         run: |
           curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
@@ -109,4 +100,3 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
             -d '{ "deployment_status": "Deployment successful", "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}" }'
-          
