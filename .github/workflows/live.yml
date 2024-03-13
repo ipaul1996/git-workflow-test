@@ -1,0 +1,101 @@
+name: Deploy to Firebase Hosting Live Channel Workflow
+run-name: Deploy to Firebase Hosting Live Channel
+"on":
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  checkout_install_build_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make a POST request on process initation
+        run: |
+          curl -X POST '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_live_history' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{ "id": ${{ github.run_id }}, "deployment_status": "Syncing repository" }'
+
+      - name: checkout-repo
+        uses: actions/checkout@v4
+
+      - name: Make a PATCH request when the dependency installation has started
+        run: |
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_live_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{ "deployment_status": "Preparing production environment, installing dependencies" }'
+
+      - name: install-dependencies
+        run: npm install
+
+      - name: Make a PATCH request when the build process has started
+        run: |
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_live_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{ "deployment_status": "Building application for the deployment" }'
+
+      - name: build
+        env:
+          REACT_APP_SUPABASE_URL: ${{secrets.REACT_APP_SUPABASE_URL}}
+          REACT_APP_SUPABASE_KEY: ${{secrets.REACT_APP_SUPABASE_KEY}}
+          CI: false
+        run: npm run build
+
+      - name: Make a PATCH request when deployment to firebase is started
+        run: |
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_live_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{ "deployment_status": "Deploying to firebase live Channel" }'
+
+      - name: deploy-firebase
+        id: deploy-firebase
+        uses: ipaul1996/firebase-deploy-action@v1.0.0
+        with:
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
+          deploymentType: preview
+          # deployTarget: "git-workflow-test-app"
+
+    outputs:
+      deploy_url: ${{ steps.deploy-firebase.outputs.deploy_url }}
+      deploy_urls: ${{ steps.deploy-firebase.outputs.deploy_urls }}
+      preview_expires: ${{ steps.deploy-firebase.outputs.preview_expires }}
+
+  post_request_on_deployment_failure:
+    needs: checkout_install_build_deploy
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make PATCH request on deployment failure
+        run: |
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_live_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{ "deployment_status": "Failed to deploy the application" }'
+
+  post_request_on_deployment_success:
+    needs: checkout_install_build_deploy
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make PATCH request on successful deployment
+        run: |
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_live_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{ "deployment_status": "Successfully deployed to a firebase live channel", "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}" }'

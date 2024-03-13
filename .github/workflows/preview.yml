@@ -1,8 +1,6 @@
-name: Deploy to Firebase Hosting on push
+name: Deploy to Firebase Hosting Preview Channel Workflow
+run-name: Deploy to Firebase Hosting Preview Channel
 "on":
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -11,9 +9,9 @@ jobs:
     steps:
       - name: Make a POST request on process initation
         run: |
-          curl -X POST 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history' \
-            -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-            -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+          curl -X POST '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
             -d '{ "id": ${{ github.run_id }}, "deployment_status": "Syncing repository" }'
@@ -23,21 +21,21 @@ jobs:
 
       - name: Make a PATCH request when the dependency installation has started
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
-            -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-            -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Preparing production environment, installing dependencies" }'
+            -d '{ "deployment_status": "Preparing environment, installing dependencies" }'
 
       - name: install-dependencies
         run: npm install
 
       - name: Make a PATCH request when the build process has started
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
-            -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-            -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
             -d '{ "deployment_status": "Building application for the deployment" }'
@@ -51,19 +49,19 @@ jobs:
 
       - name: Make a PATCH request when deployment to firebase is started
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
-            -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-            -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Deploying to Firebase" }'
+            -d '{ "deployment_status": "Deploying to firebase preview channel" }'
 
       - name: deploy-firebase
         id: deploy-firebase
         uses: ipaul1996/firebase-deploy-action@v1.0.0
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IP_RISINGSTAR }}"
-          deploymentType: live
+          deploymentType: preview
           # deployTarget: "git-workflow-test-app"
 
     outputs:
@@ -78,15 +76,13 @@ jobs:
     steps:
       - name: Make PATCH request on deployment failure
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
-            -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-            -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
             -d '{ "deployment_status": "Failed to deploy the application" }'
 
-
-            
   post_request_on_deployment_success:
     needs: checkout_install_build_deploy
     if: ${{ success() }}
@@ -94,9 +90,9 @@ jobs:
     steps:
       - name: Make PATCH request on successful deployment
         run: |
-          curl -X PATCH 'https://qbcybijsurnlebeyrere.supabase.co/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
-            -H "apikey: ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
-            -H "Authorization: Bearer ${{secrets.SUPABASE_SERVICE_ROLE_TOKEN}}" \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+            -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
+            -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Deployment successful", "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}" }'
+            -d '{ "deployment_status": "Successfully deployed to a firebase preview channel", "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}", "preview_expires": ${{needs.checkout_install_build_deploy.outputs.preview_expires}} }'

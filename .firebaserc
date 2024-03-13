@@ -7,9 +7,6 @@
       "hosting": {
         "git-workflow-test-app": [
           "workflow-test0"
-        ],
-        "git-workflow-test-app1": [
-          "workflow-test1"
         ]
       }
     }

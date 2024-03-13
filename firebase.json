@@ -1,15 +1,7 @@
 {
-  "hosting": [
-    {
-      "target": "git-workflow-test-app",
-      "public": "build",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
-    },
-
-    {
-      "target": "git-workflow-test-app1",
-      "public": "build",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
-    }
-  ]
+  "hosting": {
+    "target": "git-workflow-test-app",
+    "public": "build",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+  }
 }
