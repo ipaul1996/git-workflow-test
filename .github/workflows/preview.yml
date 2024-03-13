@@ -95,4 +95,4 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Successfully deployed to a firebase preview channel", "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}", "preview_expires": ${{needs.checkout_install_build_deploy.outputs.preview_expires}} }'
+            -d '{ "deployment_status": "Successfully deployed to a firebase preview channel", "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}", "preview_expires": "${{needs.checkout_install_build_deploy.outputs.preview_expires}}" }'
