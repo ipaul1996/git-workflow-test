@@ -9,19 +9,19 @@ jobs:
     steps:
       - name: Make a POST request on process initation
         run: |
-          curl -X POST '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history' \
+          curl -X POST '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history' \
             -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "id": ${{ github.run_id }}, "deployment_status": "Syncing repository" }'
+            -d '{ "id": ${{ github.run_id }}, "deployment_status": "Syncing repository", "deployment_type": "preview" }'
 
       - name: checkout-repo
         uses: actions/checkout@v4
 
       - name: Make a PATCH request when the dependency installation has started
         run: |
-          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
@@ -33,7 +33,7 @@ jobs:
 
       - name: Make a PATCH request when the build process has started
         run: |
-          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
@@ -49,7 +49,7 @@ jobs:
 
       - name: Make a PATCH request when deployment to firebase is started
         run: |
-          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
@@ -76,7 +76,7 @@ jobs:
     steps:
       - name: Make PATCH request on deployment failure
         run: |
-          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
@@ -90,7 +90,7 @@ jobs:
     steps:
       - name: Make PATCH request on successful deployment
         run: |
-          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_preview_history?id=eq.${{github.run_id}}' \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
