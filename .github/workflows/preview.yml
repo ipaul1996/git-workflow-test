@@ -14,7 +14,7 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "id": ${{ github.run_id }}, "deployment_status": "Syncing repository", "deployment_type": "preview" }'
+            -d '{ "id": ${{ github.run_id }}, "deployment_status": "in-progress", "current_stage": 2, "deployment_type": "preview" }'
 
       - name: checkout-repo
         uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Preparing environment, installing dependencies" }'
+            -d '{ "current_stage": 3 }'
 
       - name: install-dependencies
         run: npm install
@@ -38,7 +38,7 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Building application for the deployment" }'
+            -d '{ "current_stage": 4 }'
 
       - name: build
         env:
@@ -54,7 +54,7 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Deploying to firebase preview channel" }'
+            -d '{ "current_stage": 5 }'
 
       - name: deploy-firebase
         id: deploy-firebase
@@ -81,7 +81,7 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Failed to deploy the application" }'
+            -d '{ "deployment_status": "failed", "current_stage": -1 }'
 
   post_request_on_deployment_success:
     needs: checkout_install_build_deploy
@@ -95,4 +95,4 @@ jobs:
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d '{ "deployment_status": "Successfully deployed to a firebase preview channel", "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}", "preview_expires": "${{needs.checkout_install_build_deploy.outputs.preview_expires}}" }'
+            -d '{ "deployment_status": "succeeded", "current_stage": 6, "deploy_urls": ${{needs.checkout_install_build_deploy.outputs.deploy_urls}}, "deploy_url": "${{needs.checkout_install_build_deploy.outputs.deploy_url}}", "preview_expires": "${{needs.checkout_install_build_deploy.outputs.preview_expires}}" }'
