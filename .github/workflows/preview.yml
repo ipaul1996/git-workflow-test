@@ -74,9 +74,9 @@ jobs:
     if: ${{ failure() }}
     runs-on: ubuntu-latest
     steps:
-      - name: Make PUT request on deployment failure
+      - name: Make PATCH request on deployment failure
         run: |
-          curl -X PUT '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
@@ -88,9 +88,9 @@ jobs:
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
-      - name: Make PUT request on successful deployment
+      - name: Make PATCH request on successful deployment
         run: |
-          curl -X PUT '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
+          curl -X PATCH '${{secrets.SUPABASE_PROJECT_URL}}/rest/v1/deployment_history?id=eq.${{github.run_id}}' \
             -H "apikey: ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Authorization: Bearer ${{secrets.SUPABASE_ANON_ROLE_TOKEN}}" \
             -H "Content-Type: application/json" \
